@@ -8,7 +8,9 @@ const config = {
     password: process.env.DATABASE_SPRINT_PASSWORD,
     database: 'dailyemotion',
     dialect: 'mysql',
-    logging: false
+    logging: false,
+    port: '13306'
+    
 
   },
   test: {
