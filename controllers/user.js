@@ -7,7 +7,7 @@ module.exports = {
         const userInfo = await userinfo.findOne({
             where:{
                 user_email: req.body.email,
-                password: password
+                password: req.body.password
             }
         })
         if(!userinfo){
@@ -18,6 +18,7 @@ module.exports = {
             req.session.save(()=>{
                 console.log('save')
             })
+            res.status(200).send("login")
         }
     },
     signup:async(req,res)=>{
@@ -30,7 +31,7 @@ module.exports = {
             }
         })
         if(userEmailInfo){
-            res.status(400).send('중복된 이메일 입니다')
+            res.status(409).send('중복된 이메일 입니다')
         }
         const userNickInfo = userinfo.findOne({
             where:{
@@ -38,28 +39,46 @@ module.exports = {
             }
         })
         if(userNickInfo){
-            res.status(400).send('중복된 닉네임 입니다')
+            res.status(409).send('중복된 닉네임 입니다')
         }
         if(user_email||password||nickName === null){
-            res.status(400).send('정보가 부족합니다')
+            res.status(422).send('insufficient parameters supplied')
         }
         db.query(`INSERT INTO userInfos(user_email,password,user_nickName)
          VALUES (${user_email},${password},${nickName})`,function(err,callback){
              if(callback){
-                 res.status(200).send('sucess signup')
+                 res.status(201).send('sucess signup')
              }
              else{
                  res.status(400).send('fail signup')
              }
          })
     },
+    userInfo:async(req,res)=>{
+        const userInfo = await userinfo.findOne({
+            where:{email:req.session.userId}
+        })
+        if(userinfo){
+            res.status(200).send({
+                data:userinfo,
+                message:"sucess load userInfo"
+            })
+        }
+        else{
+            res.status(404).send({
+                data:null,
+                message:"can not find userInfo"
+            })
+        }
+    }
+    ,
     change:async(req,res)=>{
         const userInfo = await userinfo.findOne({
             where:{
                 email:req.session.userId
             }
         })
-        if(userinfo){
+        if(userInfo){
             const nickName = req.body.nickName
             const password = req.body.password
             if(nickName){
@@ -82,7 +101,7 @@ module.exports = {
             res.status(404).send('유저 정보가 없습니다')
         }
     },
-    logout: (req,res)=>{
+    signout: (req,res)=>{
         req.session.destory(function(err){
             console.log('err')
         })

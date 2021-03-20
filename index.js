@@ -32,8 +32,20 @@ app.use(
 app.use('/', (req,res)=>{
     res.send('hello every one')
 })// hello every one위해서 넣음
-app.get()
-app.post()
+app.get("/user/userInfo",controller.userInfo)
+app.get("/text/textList",controller.textList)
+app.get("/text/garbageList",controller.garbageList)
+
+app.post("/user/login",controller.login)
+app.post("/user/signup",controller.signup)
+app.post("/user/signout",controller.signout)
+app.post("/user/change",controller.change)
+app.post("/text/textRecord",controller.textRecord)
+app.post("/text/textChange",controller.textChange)
+app.post("/text/finalDelete",controller.finalDelte)
+app.post("/text/goToGarbage",controller.goToGarbage)
+app.post("/text/undo",controller.undo)
+
 let server = https.createServer({
     cert: fs.readFileSync('/etc/letsencrypt/live/projectb1.com/fullchain.pem'),
     key: fs.readFileSync('/etc/letsencrypt/live/projectb1.com/privkey.pem')

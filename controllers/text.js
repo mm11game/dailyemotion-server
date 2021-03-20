@@ -16,7 +16,7 @@ const { date } = require('../models');
 // let month = now.slice(4,6)
 // let day = now.slice(6,8)
 module.exports = {
-    text_record: (req,res) =>{
+    textRecord: (req,res) =>{
         const email = req.session.userId//(세션)
         const textContent = req.body.textContent
         const emotionId = req.body.emotionId
@@ -43,7 +43,7 @@ module.exports = {
             }
         })
     },
-    textlist: async(req,res)=>{
+    textList: async(req,res)=>{
         const textlist = await text.findAll({
             where:{
                 user_email:req.session.userId,
@@ -63,7 +63,7 @@ module.exports = {
             })
         }
     },
-    textchange: (req,res)=>{
+    textChange: (req,res)=>{
         const text_id = req.body.text_id
         const text_content = req.body.text_content
         const emotion = req.body.emotion_id
@@ -97,6 +97,10 @@ module.exports = {
     },
     goToGarbage:(req,res) =>{
         const text_id = req.body.text_id
+        const text_status = req.body.text_status
+        if(text_status !== 0){
+            res.status(400).send('Bad request')
+        }
         if(!text_id){
             res.status(400).send('Bad request')
         }
@@ -129,8 +133,12 @@ module.exports = {
     },
     undo:(req,res) =>{
         const text_id = req.body.text_id
+        const text_status = req.body.text_status
         if(!text_id){
             res.status(400).send('Bad request')
+        }
+        if(text_status !== 1){
+            res.status(400).send("Bad request")
         }
         db.query(`UPDATE texts SET text_status = 0 WHERE text_id = ${text_id}`,function(err,callback){
             if(callback){
