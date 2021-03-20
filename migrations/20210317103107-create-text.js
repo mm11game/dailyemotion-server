@@ -20,6 +20,9 @@ module.exports = {
       text_status: {
         type: Sequelize.STRING
       },
+      user_email: {
+        type: Sequelize.STRING
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

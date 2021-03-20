@@ -33,4 +33,7 @@ Object.keys(db).forEach(modelName => {
 
 db.sequelize = sequelize;
 db.Sequelize = Sequelize;
+const { userinfo, text} = sequelize.models;
+userinfo.belongsTo(text);
+text.hasMany(userinfo)
 module.exports = db;
