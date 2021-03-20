@@ -17,7 +17,8 @@ module.exports = (sequelize, DataTypes) => {
     text_content: DataTypes.STRING,
     emotionlist_id: DataTypes.INTEGER,
     date_id: DataTypes.INTEGER,
-    text_status: DataTypes.STRING
+    text_status: DataTypes.STRING,
+    user_email:DataTypes.STRING
   }, {
     sequelize,
     modelName: 'text',
