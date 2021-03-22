@@ -16,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
   text.init({
     text_content: DataTypes.STRING,
     emotionlist_id: DataTypes.INTEGER,
-    date_id: DataTypes.INTEGER,
+    date: DataTypes.STRING,
     text_status: DataTypes.STRING,
     user_email:DataTypes.STRING
   }, {

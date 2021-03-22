@@ -116,11 +116,11 @@ module.exports = {
     garbageList:async(req,res)=>{
         const garbageList = await text.findAll({
             where:{
-                user_email:req.session.userId,
+                // user_email:req.session.userId,
                 text_status:'1'}
         })
         if(garbageList){
-            res.stauts(200).send({
+            res.status(200).send({
                 data:garbageList,
                 message:'Load garbageList'})
         }

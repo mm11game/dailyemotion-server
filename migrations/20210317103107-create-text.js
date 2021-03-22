@@ -14,8 +14,8 @@ module.exports = {
       emotionlist_id: {
         type: Sequelize.INTEGER
       },
-      date_id: {
-        type: Sequelize.INTEGER
+      date: {
+        type: Sequelize.STRING
       },
       text_status: {
         type: Sequelize.STRING
