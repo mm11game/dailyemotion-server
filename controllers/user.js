@@ -1,66 +1,69 @@
-const { userinfo } = require('../models');
-const { nickname } = require('../models');
+const { userInfo } = require('../models');
 const db = require('../db')
-
+console.log(userInfo)
 module.exports = {
     login: async(req,res) =>{
-        const userInfo = await userinfo.findOne({
+        const userInfos = await userInfo.findOne({
             where:{
                 user_email: req.body.email,
                 password: req.body.password
             }
         })
-        if(!userinfo){
+        if(!userInfos){
             res.status(404).send('이메일 혹은 비밀번호가 일치하지 않습니다')
         }
         else{
-            req.session.userId = userInfo.email
+            req.session.userId = userInfos.user_email
             req.session.save(()=>{
                 console.log('save')
             })
-            res.status(200).send("login")
+            console.log(req.session)
+            res.status(200).send(userInfos.nickName)
         }
     },
     signup:async(req,res)=>{
-        const user_email = req.body.email
+        const email = req.body.email
         const password = req.body.password
         const nickName = req.body.nickName
-        const userEmailInfo = userinfo.findOne({
+        console.log(email,password,nickName)
+        
+        const userEmailInfo = await userInfo.findOne({
             where:{
-                user_email:req.body.email
+                user_email:email
+            }
+        })
+        const userNickInfo = await userInfo.findOne({
+            where:{
+                nickName:nickName
             }
         })
         if(userEmailInfo){
             res.status(409).send('중복된 이메일 입니다')
         }
-        const userNickInfo = userinfo.findOne({
-            where:{
-                user_nickName:req.body.nickName
-            }
-        })
-        if(userNickInfo){
+        
+        else if(userNickInfo){
             res.status(409).send('중복된 닉네임 입니다')
+            
         }
-        if(user_email||password||nickName === null){
-            res.status(422).send('insufficient parameters supplied')
-        }
-        db.query(`INSERT INTO userInfos(user_email,password,user_nickName)
-         VALUES (${user_email},${password},${nickName})`,function(err,callback){
-             if(callback){
-                 res.status(201).send('sucess signup')
-             }
-             else{
+        else{db.query(`INSERT INTO userInfos (user_email,password,nickName)
+         VALUES ('${email}','${password}','${nickName}')`,function(err,callback){
+             console.log(err)
+             console.log(callback)
+             if(err){
                  res.status(400).send('fail signup')
              }
-         })
+             else{
+                res.status(201).send('sucess signup')
+             }
+         })}
     },
     userInfo:async(req,res)=>{
-        const userInfo = await userinfo.findOne({
+        const userInfos = await userInfo.findOne({
             where:{email:req.session.userId}
         })
-        if(userinfo){
+        if(userInfos){
             res.status(200).send({
-                data:userinfo,
+                data:userInfo,
                 message:"sucess load userInfo"
             })
         }
@@ -73,23 +76,25 @@ module.exports = {
     }
     ,
     change:async(req,res)=>{
-        const userInfo = await userinfo.findOne({
+        const userInfos = await userInfo.findOne({
             where:{
-                email:req.session.userId
+                user_email:req.session.userId
             }
         })
-        if(userInfo){
+        if(userInfos){
             const nickName = req.body.nickName
             const password = req.body.password
+            console.log(userInfos.dataValues)
+            console.log(req.body)
             if(nickName){
-                db.query(`UPDATE userInfos SET nickName = ${nickName}`,function(err,callback){
+                db.query(`UPDATE userInfos SET nickName = '${nickName}' WHERE user_email = '${userInfos.dataValues.user_email}'`,function(err,callback){
                     if(callback){
                         console.log('change nickName')
                     }
                 })
             }
             if(password){
-                db.query(`UPDATE userInfos SET password = ${password}`,function(err,callback){
+                db.query(`UPDATE userInfos SET password = '${password}'  WHERE user_email = '${userInfos.dataValues.user_email}'`,function(err,callback){
                     if(callback){
                         console.log('change password')
                     }
@@ -102,9 +107,9 @@ module.exports = {
         }
     },
     signout: (req,res)=>{
-        req.session.destory(function(err){
-            console.log('err')
-        })
-        res.status(205).send('logout sucess')
+
+        req.session.userId = null
+        console.log(req.session)
+        res.status(200).send('logout sucess')
     }
 }

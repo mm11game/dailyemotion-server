@@ -14,9 +14,8 @@ module.exports = (sequelize, DataTypes) => {
     }
   };
   userInfo.init({
-    usertext_id: DataTypes.INTEGER,
     user_email: DataTypes.STRING,
-    nickName_id: DataTypes.INTEGER,
+    nickName: DataTypes.STRING,
     password: DataTypes.STRING
   }, {
     sequelize,
