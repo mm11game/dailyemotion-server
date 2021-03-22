@@ -47,32 +47,32 @@ app.post("/text/finalDelete",textController.finalDelete)
 app.post("/text/goToGarbage",textController.goToGarbage)
 app.post("/text/undo",textController.undo)
 app.post("/text/test",textController.test1)
-let server
-if(fs.existsSync("./key.pem") && fs.existsSync("./cert.pem")){
-    server = https
-      .createServer(
-        {
-          key: fs.readFileSync(__dirname + `/` + 'key.pem', 'utf-8'),
-          cert: fs.readFileSync(__dirname + `/` + 'cert.pem', 'utf-8'),
-        },
-        app
-      )
-      .listen(PORT);
-      } else {
-        server = app.listen(PORT)
-      }
-// let server = https.createServer(
-//     {
-//     cert: fs.readFileSync('/etc/letsencrypt/live/projectb1.com/fullchain.pem'),
-//     key: fs.readFileSync('/etc/letsencrypt/live/projectb1.com/privkey.pem')
-// }
-// .listen(5000,() =>{
-//     console.log('5000')
-// }))
-// app.listen(PORT,() =>{
-//     console.log('SERVER ON 4000')
-// })
-// app.listen(5000,() => {
-//     console.log('server on 5000')
-// })
+// let server
+// if(fs.existsSync("./key.pem") && fs.existsSync("./cert.pem")){
+//     server = https
+//       .createServer(
+//         {
+//           key: fs.readFileSync(__dirname + `/` + 'key.pem', 'utf-8'),
+//           cert: fs.readFileSync(__dirname + `/` + 'cert.pem', 'utf-8'),
+//         },
+//         app
+//       )
+//       .listen(PORT);
+//       } else {
+//         server = app.listen(PORT)
+//       }
+let server = https.createServer(
+    {
+    cert: fs.readFileSync('/etc/letsencrypt/live/projectb1.com/fullchain.pem'),
+    key: fs.readFileSync('/etc/letsencrypt/live/projectb1.com/privkey.pem')
+}
+.listen(5000,() =>{
+    console.log('5000')
+}))
+app.listen(PORT,() =>{
+    console.log('SERVER ON 4000')
+})
+app.listen(5000,() => {
+    console.log('server on 5000')
+})
 module.exports = server;
