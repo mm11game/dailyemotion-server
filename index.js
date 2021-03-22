@@ -9,7 +9,7 @@ const textController = require('./controllers/text')
 const userController = require('./controllers/user')
 const PORT = 5000;
 app.use(cors({
-    origin:'https://localhost:5000',
+    origin:'https://projectb1.com',
     option:['GET, POST, OPTION'],
     credentials:true
 }))
@@ -21,7 +21,7 @@ app.use(
         resave:false,
         saveUninitialized:true,
         cookie:{
-            domain:'@dailyEmotion',
+            domain:'projectb1.com',
             path:'/',
             maxAge: 24 * 6 * 60 * 10000,
             sameSite: 'none',
