@@ -5,10 +5,11 @@ const cors = require('cors')
 const session = require('express-session')
 require('./models')
 const app = express();
-const controller = require('./controllers')
-const PORT = process.env.PORT||4000;
+const textController = require('./controllers/text')
+const userController = require('./controllers/user')
+const PORT = 5000;
 app.use(cors({
-    origin:'https://localhost:4000',
+    origin:'https://localhost:5000',
     option:['GET, POST, OPTION'],
     credentials:true
 }))
@@ -16,11 +17,11 @@ app.use(express.json());
 app.use(express.urlencoded( {extended : false } ));
 app.use(
     session({
-        secret: '',
+        secret: '@dailyemotion',
         resave:false,
         saveUninitialized:true,
         cookie:{
-            domain:'localhost',
+            domain:'@dailyEmotion',
             path:'/',
             maxAge: 24 * 6 * 60 * 10000,
             sameSite: 'none',
@@ -29,31 +30,49 @@ app.use(
         }
     })
 )
-app.use('/', (req,res)=>{
-    res.send('hello every one')
-})// hello every one위해서 넣음
-app.get("/user/userInfo",controller.userInfo)
-app.get("/text/textList",controller.textList)
-app.get("/text/garbageList",controller.garbageList)
+// app.use('/', (req,res)=>{
+//     res.send('hello every one')
+// })// hello every one위해서 넣음
+app.get("/user/userInfo",userController.userInfo)
+app.get("/text/textList",textController.textList)
+app.get("/text/garbageList",textController.garbageList)
 
-app.post("/user/login",controller.login)
-app.post("/user/signup",controller.signup)
-app.post("/user/signout",controller.signout)
-app.post("/user/change",controller.change)
-app.post("/text/textRecord",controller.textRecord)
-app.post("/text/textChange",controller.textChange)
-app.post("/text/finalDelete",controller.finalDelte)
-app.post("/text/goToGarbage",controller.goToGarbage)
-app.post("/text/undo",controller.undo)
-
-let server = https.createServer({
-    cert: fs.readFileSync('/etc/letsencrypt/live/projectb1.com/fullchain.pem'),
-    key: fs.readFileSync('/etc/letsencrypt/live/projectb1.com/privkey.pem')
-})
-app.listen(PORT,() =>{
-    console.log('SERVER ON 4000')
-})
-app.listen(5000,() => {
-    console.log('server on 5000')
-})
+app.post("/user/login",userController.login)
+app.post("/user/signup",userController.signup)
+app.post("/user/signout",userController.signout)
+app.post("/user/change",userController.change)
+app.post("/text/textRecord",textController.textRecord)
+app.post("/text/textChange",textController.textChange)
+app.post("/text/finalDelete",textController.finalDelete)
+app.post("/text/goToGarbage",textController.goToGarbage)
+app.post("/text/undo",textController.undo)
+app.post("/text/test",textController.test1)
+let server
+if(fs.existsSync("./key.pem") && fs.existsSync("./cert.pem")){
+    server = https
+      .createServer(
+        {
+          key: fs.readFileSync(__dirname + `/` + 'key.pem', 'utf-8'),
+          cert: fs.readFileSync(__dirname + `/` + 'cert.pem', 'utf-8'),
+        },
+        app
+      )
+      .listen(PORT);
+      } else {
+        server = app.listen(PORT)
+      }
+// let server = https.createServer(
+//     {
+//     cert: fs.readFileSync('/etc/letsencrypt/live/projectb1.com/fullchain.pem'),
+//     key: fs.readFileSync('/etc/letsencrypt/live/projectb1.com/privkey.pem')
+// }
+// .listen(5000,() =>{
+//     console.log('5000')
+// }))
+// app.listen(PORT,() =>{
+//     console.log('SERVER ON 4000')
+// })
+// app.listen(5000,() => {
+//     console.log('server on 5000')
+// })
 module.exports = server;

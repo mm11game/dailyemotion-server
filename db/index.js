@@ -1,9 +1,9 @@
 const mysql = require('mysql');
 const dotenv = require('dotenv');
 const config = require('../config/config');
-dotenv.config();
+// dotenv.config();
 // const connection = mysql.createConnection({
-//     host: 'database-2.ckixfmoji8jp.ap-northeast-2.rds.amazonaws.com',
+//     host: 'dailyemotion.ckixfmoji8jp.ap-northeast-2.rds.amazonaws.com',
 //     port: '13306',
 //     user: 'admin',
 //     password: 'dlaudcks1',
@@ -28,8 +28,8 @@ const con = mysql.createConnection(
     config[process.env.NODE_ENV || 'development']
 
 )
-con.connect(function(error){
-    if(error) throw error
+con.connect(function(err){
+    if(err) throw err
 })
 console.log(con)
 

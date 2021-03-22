@@ -1,10 +1,9 @@
-const { userinfo } = require('../models');
-const { nickname } = require('../models');
+const { userinfo } = require('../models/userinfo');
 const db = require('../db')
 
 module.exports = {
     login: async(req,res) =>{
-        const userInfo = await userinfo.findOne({
+        const usersInfo = await userinfo.findOne({
             where:{
                 user_email: req.body.email,
                 password: req.body.password
@@ -14,7 +13,7 @@ module.exports = {
             res.status(404).send('이메일 혹은 비밀번호가 일치하지 않습니다')
         }
         else{
-            req.session.userId = userInfo.email
+            req.session.userId = usersInfo.user_email
             req.session.save(()=>{
                 console.log('save')
             })
@@ -22,30 +21,32 @@ module.exports = {
         }
     },
     signup:async(req,res)=>{
-        const user_email = req.body.email
+        const email = req.body.email
         const password = req.body.password
         const nickName = req.body.nickName
-        const userEmailInfo = userinfo.findOne({
+        console.log(req.body)
+        if(email||password||nickName === undefined){
+            res.status(422).send('insufficient parameters supplied')
+        }
+        
+        const userEmailInfo = await userinfo.findAll({
             where:{
-                user_email:req.body.email
+                user_email:email
             }
         })
         if(userEmailInfo){
             res.status(409).send('중복된 이메일 입니다')
         }
-        const userNickInfo = userinfo.findOne({
+        const userNickInfo = await userinfo.findOne({
             where:{
-                user_nickName:req.body.nickName
+                nickName:nickName
             }
         })
         if(userNickInfo){
             res.status(409).send('중복된 닉네임 입니다')
         }
-        if(user_email||password||nickName === null){
-            res.status(422).send('insufficient parameters supplied')
-        }
         db.query(`INSERT INTO userInfos(user_email,password,user_nickName)
-         VALUES (${user_email},${password},${nickName})`,function(err,callback){
+         VALUES (${email},${password},${nickName})`,function(err,callback){
              if(callback){
                  res.status(201).send('sucess signup')
              }
@@ -58,9 +59,9 @@ module.exports = {
         const userInfo = await userinfo.findOne({
             where:{email:req.session.userId}
         })
-        if(userinfo){
+        if(userInfo){
             res.status(200).send({
-                data:userinfo,
+                data:userInfo,
                 message:"sucess load userInfo"
             })
         }
@@ -75,7 +76,7 @@ module.exports = {
     change:async(req,res)=>{
         const userInfo = await userinfo.findOne({
             where:{
-                email:req.session.userId
+                user_email:req.session.userId
             }
         })
         if(userInfo){
