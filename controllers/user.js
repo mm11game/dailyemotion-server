@@ -15,11 +15,10 @@ module.exports = {
         else{
             console.log(userInfos.user_email)
             console.log(req.body.email)
+            req.session.userId = userInfos.user_email
             req.session.save(()=>{
-                req.session.userId = userInfos.user_email
-                //console.log('save')
-               
             }) 
+            req.session.userId = userInfos.user_email
              console.log(req.session)
             res.status(200).send(userInfos.nickName)
         }
