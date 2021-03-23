@@ -25,7 +25,8 @@ module.exports = {
         const email = req.body.email
         const password = req.body.password
         const nickName = req.body.nickName
-        console.log(email,password,nickName)
+        const confirmPassword = req.body.confirmPassword
+        console.log(email,password,nickName,confirmPassword)
         
         const userEmailInfo = await userInfo.findOne({
             where:{
@@ -44,6 +45,9 @@ module.exports = {
         else if(userNickInfo){
             res.status(409).send('중복된 닉네임 입니다')
             
+        }
+        else if(password !== confirmPassword){
+            res.status(400).send('비밀번호가 맞지 않습니다.')
         }
         else{db.query(`INSERT INTO userInfos (user_email,password,nickName)
          VALUES ('${email}','${password}','${nickName}')`,function(err,callback){
