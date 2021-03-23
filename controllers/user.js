@@ -128,7 +128,7 @@ module.exports = {
         if(userInfos){
             res.status(200).send({
                 data:{email:userInfos.user_email, nickName:userInfos.nickName},
-                message: 'ok'
+                message: '1ok'
             }
             )
         }else{
