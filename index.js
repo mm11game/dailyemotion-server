@@ -65,8 +65,10 @@ app.get("/user",userController.user)
 
 let server = https.createServer(
     {
-    cert: fs.readFileSync('/etc/letsencrypt/live/projectb1.com/fullchain.pem'),
-    key: fs.readFileSync('/etc/letsencrypt/live/projectb1.com/privkey.pem')
+      ca: fs.readFileSync('/etc/letsencrypt/live/projectb1.com/fullchain.pem'),
+      key: fs.readFileSync('/etc/letsencrypt/live/projectb1.com/privkey.pem'),
+      cert: fs.readFileSync('/etc/letsencrypt/live/projectb1.com/cert.pem')
+            
 },app)
 .listen(PORT)
 
