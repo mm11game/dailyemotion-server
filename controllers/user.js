@@ -18,8 +18,10 @@ module.exports = {
             req.session.save(()=>{
                 req.session.userId = userInfos.user_email
                 //console.log('save')
-                   res.status(200).send(userInfos.nickName)
+               
             }) 
+             console.log(req.session)
+            res.status(200).send(userInfos.nickName)
         }
     },
     signup:async(req,res)=>{

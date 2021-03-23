@@ -49,6 +49,7 @@ app.post("/text/goToGarbage",textController.goToGarbage)
 app.post("/text/undo",textController.undo)
 app.post("/text/test",textController.test1)
 app.get("/user",userController.user)
+
 // let server
 // if(fs.existsSync("./key.pem") && fs.existsSync("./cert.pem")){
 //     server = https
@@ -63,6 +64,7 @@ app.get("/user",userController.user)
 //       } else {
 //         server = app.listen(PORT)
 //       }
+
 let server = https.createServer(
     {
     cert: fs.readFileSync('/etc/letsencrypt/live/projectb1.com/fullchain.pem'),
