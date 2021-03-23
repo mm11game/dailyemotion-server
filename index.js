@@ -8,11 +8,7 @@ const app = express();
 const textController = require('./controllers/text')
 const userController = require('./controllers/user')
 const PORT = 5000;
-app.use(cors({
-    origin:true,
-    option:['GET, POST, OPTION'],
-    credentials:true
-}))
+app.use(cors({credentials:true}))
 app.use(express.json()); 
 app.use(express.urlencoded( {extended : false } ));
 app.use(
@@ -29,6 +25,12 @@ app.use(
         }
     })
 )
+app.use(function(req, res, next) {
+    res.header('Access-Control-Allow-Origin', req.headers.origin);
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+    res.header('Access-Control-Allow-Credentials', true)
+    next();
+  });
 // app.use('/', (req,res)=>{
 //     res.send('hello every one')
 // })// hello every one위해서 넣음
