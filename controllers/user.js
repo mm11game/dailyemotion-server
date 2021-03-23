@@ -13,12 +13,13 @@ module.exports = {
             res.status(404).send('이메일 혹은 비밀번호가 일치하지 않습니다')
         }
         else{
-            req.session.userId = userInfos.user_email
+            console.log(userInfos.user_email)
+            console.log(req.body.email)
             req.session.save(()=>{
-                console.log('save')
-            })
-            console.log(req.session)
-            res.status(200).send(userInfos.nickName)
+                req.session.userId = userInfos.user_email
+                //console.log('save')
+                   res.status(200).send(userInfos.nickName)
+            }) 
         }
     },
     signup:async(req,res)=>{
