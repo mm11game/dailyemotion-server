@@ -9,17 +9,19 @@ module.exports = {
                 password: req.body.password
             }
         })
+        console.log(userInfos.user_email)
         if(!userInfos){
             res.status(404).send('이메일 혹은 비밀번호가 일치하지 않습니다')
         }
         else{
-            console.log(userInfos.user_email)
-            console.log(req.body.email)
-            req.session.save(()=>{
-                req.session.userId = userInfos.user_email
-                //console.log('save')
-                   res.status(200).send(userInfos.nickName)
-            }) 
+            req.session.userId = userInfos.user_email
+            console.log(req.session)
+            req.session.save(function(){
+                
+                res.status(200).send(userInfos.nickName)
+                console.log('save')
+            }),
+            console.log(req.session)
         }
     },
     signup:async(req,res)=>{

@@ -14,13 +14,13 @@ app.use(
     resave: false,
     saveUninitialized: true,
     cookie: {
-      // domain:'prmojectb1.com',
       domain: "localhost",
+      // domain:'localhost',
       path: "/",
       maxAge: 24 * 6 * 60 * 10000,
       sameSite: "none",
       httpOnly: true,
-      secure: "none",
+      secure: true,
     },
   })
 );
@@ -39,7 +39,8 @@ app.post("/text/goToGarbage", textController.goToGarbage);
 app.post("/text/undo", textController.undo);
 app.post("/text/test", textController.test1);
 app.get("/user", userController.user);
-let server;
+
+// let server
 // if(fs.existsSync("./key.pem") && fs.existsSync("./cert.pem")){
 //     server = https
 //       .createServer(
@@ -53,6 +54,7 @@ let server;
 //       } else {
 //         server = app.listen(PORT)
 //       }
+
 let server = https
   .createServer(
     {
