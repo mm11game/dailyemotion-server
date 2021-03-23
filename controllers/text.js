@@ -1,5 +1,5 @@
-const db = require('../db')
-
+const db = require('../db/index')
+const { userInfo } = require('../models');
 const { text } = require('../models');
 const { emotion } = require('../models');
 function getToday(){
@@ -16,32 +16,42 @@ module.exports = {
     test1:(req,res)=>{
         res.status(200).send(req.body)
     },
-    textRecord: (req,res) =>{
+    textRecord: async(req,res) =>{
         const email = req.session.userId//(세션)
         const textContent = req.body.textContent
         const emotionId = req.body.emotionId
-        if(email||textContent||emotionId === null){
-            res.status(404).send('값이 다 입력되지 않았습니다')
-        }
-        db.query(`SELECT user_email FROM userInfo WHERE user_email = ${email}`,function(err,result){
-            if(result){
-                db.query(`INSERT INTO text(textContent,emotionlist_id,user_email,text_status,date) 
-                VALUES (${textContent},${emotionId},${result},0,${now})`,function(err,callback){
-                    if(callback){
-                        res.status(200).send('sucess text recording')
+        console.log(email,textContent,emotionId)
+        if(email&&textContent !== null){
+            const userEmailInfo = await userInfo.findOne({
+                where:{
+                    user_email:email
+                }
+            })
+            if(userEmailInfo){
+                console.log(now,'1')
+                console.log('0')
+                db.query(`INSERT INTO texts (text_content,emotionlist_id,user_email,text_status,date) 
+                VALUES ('${textContent}',${emotionId},'${email}',0,'${now}')`,function(err,callback){
+                    console.log('1')
+                    if(err){
+                        console.log(err)
+                        res.status(400).send("can not write text")
                         //감정 텍스트 다대다로 표현하면 text.id = text.emotionlistId
                         //emotionlist.textid = text.emotionlistid
                         //req.body.emotionId = array
                     }
                     else{
-                        res.status(400).send("can not write text")
-                    }
-                })
-            }
-            else{
-                res.status(404).send('유저 정보를 찾을 수 없습니다')
-            }
-        })
+                       res.status(200).send('sucess text recording') 
+                    } 
+        })}
+        else{
+            res.status(400).send("you can not write text")
+        }
+    
+    }
+        else{
+            res.status(404).send('값이 다 입력되지 않았습니다')
+        }
     },
     textList: async(req,res)=>{
         const textlist = await text.findAll({
@@ -70,48 +80,54 @@ module.exports = {
         // if(text_id||text_content||emotion === undefined){
         //     res.status(404).send('정보가 부족합니다')
         // }
-        if(text_id&&text_content&emotion){db.query(`UPDATE texts SET text_content = ${text_content}, emotionlist_id = ${emotion}
-        WHERE text_id = ${text_id}`),function(err,callback){
-            if(callback){
-                res.status(200).send('complete chagnge text')
-            }
-            else{
+        console.log(text_id,text_content,emotion)
+        console.log('abc')
+        if(text_id&&text_content&&emotion !== null){db.query(`UPDATE texts SET text_content = '${text_content}', emotionlist_id = ${emotion}
+         WHERE id = ${text_id}`,function(err,callback){
+            console.log('att')
+            if(err){
+                console.log(err)
                 res.status(400).send('can not change text')
             }
-        }}
-        res.status(400).send('error')
+            else{
+               res.status(200).send('complete chagnge text') 
+            }
+        })}
+       else{ res.status(400).send('error')}
     },
     finalDelete: (req,res)=>{
         const text_id = req.body.text_id
         if(!text_id){
             res.status(400).send('Bad request')
-        }
-        db.query(`DELETE FROM texts where id = ${text_id}`,function(err,callback){
-            if(callback){//callback 있나 확인 update도
-                res.status(200).send('complete delete')
+        }for(let i = 0; i < text_id.length; i++){
+            let textNumber = text_id[i]
+             db.query(`DELETE FROM texts where id = ${textNumber}`,function(err,callback){
+            if(err){//callback 있나 확인 update도
+              res.status(400).send('bad request') 
             }
             else{
-                res.status(400).send('bad request')
+                res.status(200).send('complete')
             }
         })
+        }
+
     },
     goToGarbage:(req,res) =>{
         const text_id = req.body.text_id
         const text_status = req.body.text_status
-        if(text_status !== 0){
+        console.log(String(text_id) )
+        if(String(text_id) === undefined || text_status !== '0'){
             res.status(400).send('Bad request')
         }
-        if(!text_id){
-            res.status(400).send('Bad request')
-        }
-        db.query(`UPDATE texts SET text_status = 1 WHERE text_id = ${text_id}`,function(err,callback){
-            if(callback){
-                res.status(200).send('Go to garbage')
+        else{db.query(`UPDATE texts SET text_status = 1 WHERE id = ${text_id}`,function(err,callback){
+            if(err){
+                console.log(err)
+                res.status(400).send('Bad equest')
             }
             else{
-                res.status(400).send('Bad request')
+                res.status(200).send('Go to garbage')
             }
-        })
+        })}
     },
     garbageList:async(req,res)=>{
         const garbageList = await text.findAll({
@@ -134,20 +150,17 @@ module.exports = {
     undo:(req,res) =>{
         const text_id = req.body.text_id
         const text_status = req.body.text_status
-        if(!text_id){
+        if(text_id === null || text_status !== '1'){
             res.status(400).send('Bad request')
         }
-        if(text_status !== 1){
-            res.status(400).send("Bad request")
-        }
-        db.query(`UPDATE texts SET text_status = 0 WHERE text_id = ${text_id}`,function(err,callback){
-            if(callback){
-                res.status(200).send('Go to garbage')
+        else{db.query(`UPDATE texts SET text_status = 0 WHERE id = ${text_id}`,function(err,callback){
+            if(err){
+                 res.status(400).send('Bad request')    
             }
             else{
-                res.status(400).send('Bad request')
+                res.status(200).send('Go to texts')
             }
-        })
+        })}
     }
 
     

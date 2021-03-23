@@ -1,7 +1,7 @@
 const mysql = require("mysql");
 const dotenv = require("dotenv");
 const config = require("../config/config");
-// dotenv.config();
+dotenv.config();
 // const connection = mysql.createConnection({
 //     host: 'dailyemotion.ckixfmoji8jp.ap-northeast-2.rds.amazonaws.com',
 //     port: '13306',
@@ -29,6 +29,5 @@ const con = mysql.createConnection(
 con.connect(function (err) {
   if (err) throw err;
 });
-console.log(con);
 
 module.exports = con;
