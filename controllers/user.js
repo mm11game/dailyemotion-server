@@ -111,5 +111,21 @@ module.exports = {
         req.session.userId = null
         console.log(req.session)
         res.status(200).send('logout sucess')
+    },
+    user: async(req,res)=>{
+        console.log(req.session)
+        const userInfos = await userInfo.findOne({
+            where:{user_email:req.session.userId}
+        })
+        console.log(userInfos)
+        if(userInfos){
+            res.status(200).send({
+                data:{email:userInfos.user_email, nickName:userInfos.nickName},
+                message: 'ok'
+            }
+            )
+        }else{
+            res.status(404).send('fail user')
+        }
     }
 }
