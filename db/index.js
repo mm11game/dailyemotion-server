@@ -1,15 +1,34 @@
 const mysql = require("mysql");
 const dotenv = require("dotenv");
 const config = require("../config/config");
-dotenv.config();
+// dotenv.config();
+// const connection = mysql.createConnection({
+//     host: 'dailyemotion.ckixfmoji8jp.ap-northeast-2.rds.amazonaws.com',
+//     port: '13306',
+//     user: 'admin',
+//     password: 'dlaudcks1',
+//     database: 'dailyemotion'
+// }
+// );
+// connection.connect(function(err){
+//     if(err){
+
+//         return;
+//     }
+//     console.log('connceted to database')
+// })
+
+// connection.query('SELECT * FROM texts',function(err,result){
+//     console.log(result)
+// })
+// module.exports= connection
 
 const con = mysql.createConnection(
   config[process.env.NODE_ENV || "development"]
 );
-
-con.connect((err) => {
+con.connect(function (err) {
   if (err) throw err;
 });
-con.end();
+console.log(con);
 
 module.exports = con;
