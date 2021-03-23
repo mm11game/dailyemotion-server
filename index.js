@@ -21,8 +21,8 @@ app.use(
         resave:false,
         saveUninitialized:true,
         cookie:{
-            // domain:'prmojectb1.com',
-            domain:'localhost',
+             domain:'test.prmojectb1.com',
+            // domain:'localhost',
             path:'/',
             maxAge: 24 * 6 * 60 * 10000,
             sameSite: 'none',
@@ -49,7 +49,7 @@ app.post("/text/goToGarbage",textController.goToGarbage)
 app.post("/text/undo",textController.undo)
 app.post("/text/test",textController.test1)
 app.get("/user",userController.user)
-let server
+// let server
 // if(fs.existsSync("./key.pem") && fs.existsSync("./cert.pem")){
 //     server = https
 //       .createServer(
