@@ -14,10 +14,9 @@ module.exports = {
             res.status(404).send('이메일 혹은 비밀번호가 일치하지 않습니다')
         }
         else{
-            req.session.userId = userInfos.user_email
             console.log(req.session)
             req.session.save(function(){
-                
+                req.session.userId = userInfos.user_email
                 res.status(200).send(userInfos.nickName)
                 console.log('save')
             }),

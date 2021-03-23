@@ -21,8 +21,6 @@ app.use(
         resave:false,
         saveUninitialized:true,
         cookie:{
-             domain:'localhost',
-            // domain:'localhost',
             path:'/',
             maxAge: 24 * 6 * 60 * 10000,
             sameSite: 'none',
@@ -50,26 +48,26 @@ app.post("/text/undo",textController.undo)
 app.post("/text/test",textController.test1)
 app.get("/user",userController.user)
 
-let server
-if(fs.existsSync("./key.pem") && fs.existsSync("./cert.pem")){
-    server = https
-      .createServer(
-        {
-          key: fs.readFileSync(__dirname + `/` + 'key.pem', 'utf-8'),
-          cert: fs.readFileSync(__dirname + `/` + 'cert.pem', 'utf-8'),
-        },
-        app
-      )
-      .listen(PORT);
-      } else {
-        server = app.listen(PORT)
-      }
+// let server
+// if(fs.existsSync("./key.pem") && fs.existsSync("./cert.pem")){
+//     server = https
+//       .createServer(
+//         {
+//           key: fs.readFileSync(__dirname + `/` + 'key.pem', 'utf-8'),
+//           cert: fs.readFileSync(__dirname + `/` + 'cert.pem', 'utf-8'),
+//         },
+//         app
+//       )
+//       .listen(PORT);
+//       } else {
+//         server = app.listen(PORT)
+//       }
 
-// let server = https.createServer(
-//     {
-//     cert: fs.readFileSync('/etc/letsencrypt/live/projectb1.com/fullchain.pem'),
-//     key: fs.readFileSync('/etc/letsencrypt/live/projectb1.com/privkey.pem')
-// },app)
-// .listen(PORT)
+let server = https.createServer(
+    {
+    cert: fs.readFileSync('/etc/letsencrypt/live/projectb1.com/fullchain.pem'),
+    key: fs.readFileSync('/etc/letsencrypt/live/projectb1.com/privkey.pem')
+},app)
+.listen(PORT)
 
 module.exports = server;
