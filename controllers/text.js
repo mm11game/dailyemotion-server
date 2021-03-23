@@ -54,6 +54,7 @@ module.exports = {
         }
     },
     textList: async(req,res)=>{
+        console.log(req.session)
         const textlist = await text.findAll({
             where:{
                 user_email:req.session.userId,
