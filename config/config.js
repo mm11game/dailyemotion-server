@@ -1,4 +1,4 @@
-const dotenv = require('dotenv');
+const dotenv = require("dotenv");
 dotenv.config();
 
 const config = {
@@ -6,19 +6,18 @@ const config = {
     host: process.env.DATABASE_SPRINT_HOST,
     username: process.env.DATABASE_SPRINT_USER,
     password: process.env.DATABASE_SPRINT_PASSWORD,
-    database: 'dailyemotion',
-    dialect: 'mysql',
-    logging: false
-
+    database: "dailyemotion",
+    dialect: "mysql",
+    logging: false,
   },
   test: {
     host: process.env.DATABASE_SPRINT_HOST,
     username: process.env.DATABASE_SPRINT_USER,
     password: process.env.DATABASE_SPRINT_PASSWORD,
-    database: 'dailyemotion',
-    dialect: 'mysql',
-    logging: false
-  }
+    database: "dailyemotion",
+    dialect: "mysql",
+    logging: false,
+  },
 };
 
 module.exports = config;
