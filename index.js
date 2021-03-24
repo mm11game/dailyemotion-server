@@ -3,12 +3,21 @@ const https = require("https");
 const fs = require("fs");
 const cors = require("cors");
 const session = require("express-session");
+
 require("./models");
 const app = express();
+
+const PORT = 5000;
+app.use(
+  cors({
+    origin: true,
+    method: "GET,HEAD,PUT,PATCH,POST,DELETE",
+    credentials: true,
+  })
+);
+
 const textController = require("./controllers/text");
 const userController = require("./controllers/user");
-const PORT = 5000;
-app.use(cors({ credentials: true }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(
