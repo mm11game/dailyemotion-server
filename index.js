@@ -8,7 +8,9 @@ const app = express();
 const textController = require('./controllers/text')
 const userController = require('./controllers/user')
 const PORT = 5000;
-app.use(cors({credentials:true}))
+app.use(cors({
+    origin: "*",
+    credentials:true}))
 app.use(express.json()); 
 app.use(express.urlencoded( {extended : false } ));
 app.use(
