@@ -8,7 +8,9 @@ const app = express();
 const textController = require('./controllers/text');
 const userController = require('./controllers/user');
 const PORT = 5000;
-app.use(cors({credentials:true}));
+app.use(cors({
+    origin:'localhost',
+    credentials:true}));
 app.use(express.json())
 app.use(express.urlencoded( {extended : false } ));
 app.use(
@@ -33,7 +35,7 @@ app.use(function(req, res, next) {
   });
 // app.use('/', (req,res)=>{
 //     res.send('hello every one')
-// })// hello every one위해서 넣음
+// })// hello every one위해서 넣음 테스트
 app.get("/user/userInfo",userController.userInfo);
 app.get("/text/textList",textController.textList);
 app.get("/text/garbageList",textController.garbageList);
