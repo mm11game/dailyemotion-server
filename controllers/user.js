@@ -134,5 +134,35 @@ module.exports = {
         }else{
             res.status(404).send('fail user');
         }
+    },
+    oauth: async(req,res)=>{
+        const email = req.body.email
+        const name = req.body.name
+        const goggleInfo = await userInfo.findOne(
+            {where:{user_email: req.body.email}}
+        )
+        if(goggleInfo){
+            req.session.userId = goggleInfo.user_email
+            req.session.save(()=>{
+                console.log('save')
+                res.status(200).send('sucess login')
+            })
+        }
+        else{
+            db.query(`INSERT INTO userInfos (user_email, nickName) VALUES ('${email}', '${name}')`,(err,callback)=>{
+                if(err){
+                    console.log(err)
+                    res.status(400).send('bad request')
+                }
+                else{
+                    req.session.userId = email
+                    req.session.save(function(){
+                        res.status(200).send('singup and login sucess')
+                        console.log('save')
+                    })
+                 
+            }})
+        
+        }
     }
 }
