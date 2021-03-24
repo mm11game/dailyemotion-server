@@ -15,6 +15,7 @@ module.exports = {
         }
         else{
             console.log(req.session);
+            req.session.userId = userInfos.user_email
             req.session.save(function(){
                 req.session.userId = userInfos.user_email
                 res.status(200).send(userInfos.nickName);
