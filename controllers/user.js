@@ -8,28 +8,27 @@ module.exports = {
                 user_email: req.body.email,
                 password: req.body.password
             }
-        })
+        });
         console.log(userInfos.user_email)
         if(!userInfos){
-            res.status(404).send('이메일 혹은 비밀번호가 일치하지 않습니다')
+            res.status(404).send('이메일 혹은 비밀번호가 일치하지 않습니다');
         }
         else{
-            req.session.userId = userInfos.user_email
-            console.log(req.session)
+            console.log(req.session);
             req.session.save(function(){
-                
-                res.status(200).send(userInfos.nickName)
-                console.log('save')
+                req.session.userId = userInfos.user_email
+                res.status(200).send(userInfos.nickName);
+                console.log('save');
             }),
-            console.log(req.session)
+            console.log(req.session);
         }
     },
     signup:async(req,res)=>{
-        const email = req.body.email
-        const password = req.body.password
-        const nickName = req.body.nickName
-        const confirmPassword = req.body.confirmPassword
-        console.log(email,password,nickName,confirmPassword)
+        const email = req.body.email;
+        const password = req.body.password;
+        const nickName = req.body.nickName;
+        const confirmPassword = req.body.confirmPassword;
+        console.log(email,password,nickName,confirmPassword);
         
         const userEmailInfo = await userInfo.findOne({
             where:{
@@ -40,27 +39,27 @@ module.exports = {
             where:{
                 nickName:nickName
             }
-        })
+        });
         if(userEmailInfo){
-            res.status(409).send('중복된 이메일 입니다')
+            res.status(409).send('중복된 이메일 입니다');
         }
         
         else if(userNickInfo){
-            res.status(409).send('중복된 닉네임 입니다')
+            res.status(409).send('중복된 닉네임 입니다');
             
         }
         else if(password !== confirmPassword){
-            res.status(400).send('비밀번호가 맞지 않습니다.')
+            res.status(400).send('비밀번호가 맞지 않습니다.');
         }
         else{db.query(`INSERT INTO userInfos (user_email,password,nickName)
          VALUES ('${email}','${password}','${nickName}')`,function(err,callback){
-             console.log(err)
-             console.log(callback)
+             console.log(err);
+             console.log(callback);
              if(err){
-                 res.status(400).send('fail signup')
+                 res.status(400).send('fail signup');
              }
              else{
-                res.status(201).send('sucess signup')
+                res.status(201).send('sucess signup');
              }
          })}
     },
@@ -120,19 +119,19 @@ module.exports = {
         res.status(200).send('logout sucess')
     },
     user: async(req,res)=>{
-        console.log(req.session)
+        console.log(req.session);
         const userInfos = await userInfo.findOne({
             where:{user_email:req.session.userId}
-        })
-        console.log(userInfos)
+        });
+        console.log(userInfos);
         if(userInfos){
             res.status(200).send({
                 data:{email:userInfos.user_email, nickName:userInfos.nickName},
                 message: '1ok'
             }
-            )
+            );
         }else{
-            res.status(404).send('fail user')
+            res.status(404).send('fail user');
         }
     }
 }

@@ -8,14 +8,15 @@ const app = express();
 const textController = require("./controllers/text");
 const userController = require("./controllers/user");
 const PORT = 5000;
+app.use(cors({ credentials: true }));
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 app.use(
   session({
     secret: "@dailyemotion",
     resave: false,
     saveUninitialized: true,
     cookie: {
-      domain: "localhost",
-      // domain:'localhost',
       path: "/",
       maxAge: 24 * 6 * 60 * 10000,
       sameSite: "none",
@@ -24,12 +25,22 @@ app.use(
     },
   })
 );
+app.use(function (req, res, next) {
+  res.header("Access-Control-Allow-Origin", req.headers.origin);
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
+  res.header("Access-Control-Allow-Credentials", true);
+  next();
+});
 // app.use('/', (req,res)=>{
 //     res.send('hello every one')
 // })// hello every one위해서 넣음
 app.get("/user/userInfo", userController.userInfo);
 app.get("/text/textList", textController.textList);
 app.get("/text/garbageList", textController.garbageList);
+
 app.post("/user/login", userController.login);
 app.post("/user/signup", userController.signup);
 app.post("/user/signout", userController.signout);
@@ -60,10 +71,9 @@ if (fs.existsSync("./key.pem") && fs.existsSync("./cert.pem")) {
 // let server = https
 //   .createServer(
 //     {
-//       cert: fs.readFileSync(
-//         "/etc/letsencrypt/live/projectb1.com/fullchain.pem"
-//       ),
+//       ca: fs.readFileSync("/etc/letsencrypt/live/projectb1.com/fullchain.pem"),
 //       key: fs.readFileSync("/etc/letsencrypt/live/projectb1.com/privkey.pem"),
+//       cert: fs.readFileSync("/etc/letsencrypt/live/projectb1.com/cert.pem"),
 //     },
 //     app
 //   )
