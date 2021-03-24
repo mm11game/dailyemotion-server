@@ -35,7 +35,7 @@ app.use(function(req, res, next) {
   });
 // app.use('/', (req,res)=>{
 //     res.send('hello every one')
-// })// hello every one위해서 넣음 테스트
+// })// hello every one위해서 넣음
 app.get("/user/userInfo",userController.userInfo);
 app.get("/text/textList",textController.textList);
 app.get("/text/garbageList",textController.garbageList);
