@@ -8,6 +8,9 @@ require("./models");
 const app = express();
 
 const PORT = 5000;
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 app.use(
   cors({
     origin: true,
@@ -61,6 +64,7 @@ app.post("/text/goToGarbage", textController.goToGarbage);
 app.post("/text/undo", textController.undo);
 app.post("/text/test", textController.test1);
 app.get("/user", userController.user);
+app.post("/oauth", userController.oauth);
 
 let server;
 if (fs.existsSync("./key.pem") && fs.existsSync("./cert.pem")) {

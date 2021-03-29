@@ -14,6 +14,7 @@ module.exports = {
       res.status(404).send("이메일 혹은 비밀번호가 일치하지 않습니다");
     } else {
       console.log(req.session);
+      req.session.userId = userInfos.user_email;
       req.session.save(function () {
         req.session.userId = userInfos.user_email;
         res.status(200).send(userInfos.nickName);
@@ -28,7 +29,6 @@ module.exports = {
     const nickName = req.body.nickName;
     const confirmPassword = req.body.confirmPassword;
     console.log(email, password, nickName, confirmPassword);
-
     const userEmailInfo = await userInfo.findOne({
       where: {
         user_email: email,
@@ -78,7 +78,6 @@ module.exports = {
     }
   },
   change: async (req, res) => {
-    console.log(req.session.userId);
     const userInfos = await userInfo.findOne({
       where: {
         user_email: req.session.userId,
@@ -132,6 +131,36 @@ module.exports = {
       });
     } else {
       res.status(404).send("fail user");
+    }
+  },
+  oauth: async (req, res) => {
+    const email = req.body.email;
+    const name = req.body.name;
+    const goggleInfo = await userInfo.findOne({
+      where: { user_email: req.body.email },
+    });
+    if (goggleInfo) {
+      req.session.userId = goggleInfo.user_email;
+      req.session.save(() => {
+        console.log("save");
+        res.status(200).send("sucess login");
+      });
+    } else {
+      db.query(
+        `INSERT INTO userInfos (user_email, nickName) VALUES ('${email}', '${name}')`,
+        (err, callback) => {
+          if (err) {
+            console.log(err);
+            res.status(400).send("bad request");
+          } else {
+            req.session.userId = email;
+            req.session.save(function () {
+              res.status(200).send("singup and login sucess");
+              console.log("save");
+            });
+          }
+        }
+      );
     }
   },
 };

@@ -54,7 +54,7 @@ module.exports = {
     }
   },
   textList: async (req, res) => {
-    console.log(req.session);
+    console.log("리스트에서 세션이 유지되는가?", req.session);
     const textlist = await text.findAll({
       where: {
         user_email: req.session.userId,
@@ -125,16 +125,19 @@ module.exports = {
   goToGarbage: (req, res) => {
     const text_id = req.body.text_id;
     const text_status = req.body.text_status;
+    console.log("고드가비지 리퀘스트바디", req.body);
     console.log(String(text_id));
     if (String(text_id) === undefined || text_status !== "0") {
-      res.status(400).send("Bad request");
+      res
+        .status(400)
+        .send("텍스트아이디가 없거나, 스테이터스가 0이다 Bad request");
     } else {
       db.query(
         `UPDATE texts SET text_status = 1 WHERE id = ${text_id}`,
         function (err, callback) {
           if (err) {
             console.log(err);
-            res.status(400).send("Bad equest");
+            res.status(400).send("잘못된Bad equest");
           } else {
             res.status(200).send("Go to garbage");
           }
